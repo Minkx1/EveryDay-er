@@ -1,0 +1,244 @@
+/* ======== ФОН ======== */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: url("/static/imgs/bg.png") no-repeat center center fixed;
+    background-size: cover; /* щоб картинка розтягувалась під розмір екрану */
+    color: #000000;
+}
+/* Основний контент */
+.content {
+    position: relative;
+    z-index: 1;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.6); /* легка затемнена підкладка для читабельності */
+    border-radius: 12px;
+}
+.title {
+    text-align: center;
+    font-size: 3em;
+    color: #00ffcc;
+    margin-bottom: 10px;
+    text-shadow: 0 0 15px #00ffcc, 0 0 30px #009966;
+}
+
+.date-info {
+    text-align: center;
+    font-size: 1.2em;
+    margin-bottom: 30px;
+    color: #66ffcc;
+}
+
+.section-title {
+    margin: 30px 0 15px;
+    text-align: center;
+    font-size: 1.8em;
+    color: #33ffaa;
+    text-shadow: 0 0 10px #009966;
+}
+
+.week {
+    display: grid;
+    gap: 20px;
+}
+
+/* адаптивність */
+@media (min-width: 1000px) {
+    .week { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 999px) {
+    .week { grid-template-columns: 1fr; }
+}
+
+.day {
+    background: rgba(17, 17, 17, 0.9);
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 0 15px rgba(0, 255, 136, 0.3);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.day:hover {
+    transform: scale(1.03);
+    box-shadow: 0 0 25px rgba(0, 255, 170, 0.6);
+}
+
+.day h3 {
+    margin-top: 0;
+    font-size: 1.6em;
+    color: #00ffaa;
+    border-bottom: 1px solid #00ff88;
+    padding-bottom: 5px;
+}
+
+.event {
+    margin: 15px 0;
+    padding: 10px;
+    background: #0a0a0a;
+    border-radius: 8px;
+}
+
+.event-name {
+    font-weight: bold;
+    font-size: 1.2em;
+}
+
+.event-time {
+    font-size: 0.9em;
+    color: #66ffcc;
+    display: block;
+}
+
+.no-events {
+    color: #555;
+    font-style: italic;
+}
+
+.special {
+    border: 1px solid #00ffaa;
+    background: rgba(10, 10, 10, 0.95);
+}
+
+/* ======== КНОПКИ ======== */
+.add-btn, .edit-btn, .delete-btn {
+    margin-top: 8px;
+    padding: 6px 12px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.2s, transform 0.2s;
+}
+
+.add-btn {
+    background: #003322;
+    color: #00ff88;
+}
+
+.add-btn:hover {
+    background: #00cc66;
+    color: black;
+    transform: scale(1.05);
+}
+
+.event-actions {
+    margin-top: 5px;
+    display: flex;
+    gap: 10px;
+}
+
+.edit-btn {
+    background: #004466;
+    color: #00ddff;
+}
+
+.edit-btn:hover {
+    background: #00aaff;
+    color: black;
+    transform: scale(1.05);
+}
+
+.delete-btn {
+    background: #330000;
+    color: #ff4444;
+}
+
+.delete-btn:hover {
+    background: #ff3333;
+    color: white;
+    transform: scale(1.05);
+}
+
+.add-day-wrapper {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.add-day-btn {
+    background: #002211;
+    color: #00ff88;
+    padding: 10px 18px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1em;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s;
+}
+
+.add-day-btn:hover {
+    background: #00cc66;
+    color: black;
+    transform: scale(1.05);
+}
+
+.modal {
+    display: none; /* сховано за замовчуванням */
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.7); /* затемнення фону */
+}
+
+.modal-content {
+    background-color: #111;
+    margin: 10% auto;
+    padding: 20px;
+    border: 1px solid #0f0;
+    width: 300px;
+    border-radius: 10px;
+    color: #0f0;
+}
+
+.modal-content input {
+    width: 100%;
+    margin: 5px 0;
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid #0f0;
+    background: #000;
+    color: #0f0;
+}
+
+.modal-content button {
+    margin-top: 10px;
+    padding: 5px 10px;
+    border-radius: 5px;
+    background: #0f0;
+    color: #000;
+    border: none;
+    cursor: pointer;
+}
+
+.close {
+    float: right;
+    font-size: 20px;
+    cursor: pointer;
+}
+.delete-day-btn {
+    background: #220000;           /* Темно-червоний відтінок для видалення */
+    color: #ff4444;                /* Яскраво-червоний текст */
+    padding: 10px 18px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1em;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+}
+
+.delete-day-btn:hover {
+    background: #ff2222;           /* Яскравий червоний на hover */
+    color: #ffffff;                 /* Білий текст */
+    transform: scale(1.05);
+    box-shadow: 0 0 10px #ff4444;
+}
+
+/* Для маленьких екранів, щоб кнопка була відокремлена від додати подію */
+.day.special .delete-day-btn {
+    margin-left: 10px;
+    margin-top: 5px;
+}

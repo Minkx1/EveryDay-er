@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>EveryDay'er</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+    <div class="content">
+        <h1 class="title">EveryDay'er</h1>
+        <div class="date-info">Сьогодні: {{ current_date }}</div>
+
+        <h2 class="section-title">Плани на тиждень</h2>
+        <div class="week">
+            {% for day, events in week_plans.items() %}
+                <div class="day">
+                    <h3>{{ day.capitalize() }}</h3>
+                    <button class="add-btn" data-day="{{ day }}">➕ Додати подію</button>
+                    {% if events %}
+                        {% for e in events %}
+                            <div class="event">
+                                <span class="event-name">{{ e.name }}</span>
+                                <span class="event-time">{{ e.time }}</span>
+                                <div class="event-actions">
+                                    <button class="edit-btn" data-index="{{ loop.index0 }}" data-day="{{ day }}">✏ Редагувати</button>
+                                    <button class="delete-btn" data-day="{{ day }}" data-index="{{ loop.index0 }}">🗑 Видалити</button>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="no-events">Немає планів</p>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+
+        <h2 class="section-title">Плани на конкретні дати</h2>
+        <div class="add-day-wrapper">
+            <button id="addDayBtn" class="add-day-btn">➕ Додати день</button>
+        </div>
+        <div class="week">
+            {% for date, events in date_plans.items() %}
+                <div class="day special">
+                    <h3>{{ date }}</h3>
+                    <button class="add-btn" data-day="{{ date }}">➕ Додати подію</button>
+                    <button class="delete-day-btn" data-day="{{ date }}">🗑 Видалити день</button>
+                    {% if events %}
+                        {% for e in events %}
+                            <div class="event">
+                                <span class="event-name">{{ e.name }}</span>
+                                <span class="event-time">{{ e.time }}</span>
+                                <div class="event-actions">
+                                    <button class="edit-btn" data-index="{{ loop.index0 }}" data-day="{{ date }}">✏ Редагувати</button>
+                                    <button class="delete-btn" data-day="{{ date }}" data-index="{{ loop.index0 }}">🗑 Видалити</button>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="no-events">Немає планів</p>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Модальне вікно редагування події -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h3>Редагувати подію</h3>
+            <form id="editForm" method="post" action="/edit_event">
+                <input type="hidden" name="day" id="editDay">
+                <input type="hidden" name="index" id="editIndex">
+                <input type="text" name="name" id="editName" placeholder="Назва події" required>
+                <input type="text" name="time" id="editTime" placeholder="Час" required>
+                <button type="submit">Зберегти</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Модальне вікно додавання події -->
+    <div id="addEventModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h3>Додати подію</h3>
+            <form id="addEventForm" method="post" action="/add_event">
+                <input type="hidden" name="day" id="addDay">
+                <input type="text" name="name" placeholder="Назва події" required>
+                <input type="text" name="time" placeholder="Час" required>
+                <button type="submit">Додати</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Модальне вікно додавання дня -->
+    <div id="addDayModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h3>Додати новий день</h3>
+            <form id="addDayForm" method="post" action="/add_day">
+                <input type="text" name="date" placeholder="DD.MM.YYYY" required>
+                <button type="submit">Додати день</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Відкриття та закриття модалок
+        const editModal = document.getElementById("editModal");
+        const addEventModal = document.getElementById("addEventModal");
+        const addDayModal = document.getElementById("addDayModal");
+
+        // Редагування
+        document.querySelectorAll(".edit-btn").forEach((btn) => {
+            btn.addEventListener("click", (e) => {
+                const eventDiv = e.target.closest(".event");
+                document.getElementById("editName").value = eventDiv.querySelector(".event-name").innerText;
+                document.getElementById("editTime").value = eventDiv.querySelector(".event-time").innerText;
+                const dayDiv = eventDiv.closest(".day");
+                document.getElementById("editDay").value = btn.dataset.day;   // беремо з data-day кнопки
+                document.getElementById("editIndex").value = btn.dataset.index; // беремо з data-index кнопки
+                editModal.style.display = "block";
+            });
+        });
+
+        // Видалення
+        document.querySelectorAll(".delete-btn").forEach((btn) => {
+            btn.addEventListener("click", (e) => {
+                const day = btn.dataset.day;
+                const index = btn.dataset.index;
+
+                fetch("/delete_event", {
+                    method: "POST",
+                    headers: {"Content-Type": "application/x-www-form-urlencoded"},
+                    body: `day=${encodeURIComponent(day)}&index=${encodeURIComponent(index)}`
+                }).then(() => location.reload());
+            });
+        });
+
+        // Додати подію
+        document.querySelectorAll(".add-btn").forEach((btn) => {
+            btn.addEventListener("click", () => {
+                document.getElementById("addDay").value = btn.dataset.day;
+                addEventModal.style.display = "block";
+            });
+        });
+
+        // Додати день
+        document.getElementById("addDayBtn").addEventListener("click", () => {
+            addDayModal.style.display = "block";
+        });
+
+        // Закриття модалок
+        document.querySelectorAll(".close").forEach((el) => {
+            el.addEventListener("click", () => {
+                el.closest(".modal").style.display = "none";
+            });
+        });
+
+        window.addEventListener("click", (e) => {
+            if (e.target.classList.contains("modal")) {
+                e.target.style.display = "none";
+            }
+        });
+        document.querySelectorAll(".delete-day-btn").forEach((btn) => {
+            btn.addEventListener("click", () => {
+                const day = btn.dataset.day;
+                fetch("/delete_day", {
+                    method: "POST",
+                    headers: {"Content-Type": "application/x-www-form-urlencoded"},
+                    body: `day=${encodeURIComponent(day)}`
+                }).then(() => location.reload());
+            });
+        });
+    </script>
+</body>
+</html>
