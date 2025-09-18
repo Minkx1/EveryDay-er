@@ -10,7 +10,7 @@ load_dotenv()
 app = flask.Flask(__name__)
 
 PLANS_FILE = "plans.json"
-GITHUB_RAW_URL = "https://raw.githubusercontent.com/Minkx1/EveryDay-er/refs/heads/main/plans.json?token=GHSAT0AAAAAADH4BUTOYUYBNISPOGZCM55I2GMIZAQ"
+GITHUB_RAW_URL = "https://raw.githubusercontent.com/Minkx1/EveryDay-er/refs/heads/main/plans.json"
 GITHUB_API_URL = "https://api.github.com/repos/Minkx1/EveryDay-er/contents/plans.json"
 GITHUB_TOKEN = os.getenv("TOKEN")
 
