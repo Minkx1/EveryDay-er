@@ -4,8 +4,8 @@ body {
     padding: 0;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background: url("/static/imgs/bg.png") no-repeat center center fixed;
-    background-size: cover; /* щоб картинка розтягувалась під розмір екрану */
-    color: #000000;
+    background-size: cover;
+    color: #ffffff;
 }
 /* Основний контент */
 .content {
