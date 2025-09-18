@@ -4,8 +4,6 @@ import requests
 import os
 import base64
 from datetime import datetime
-from dotenv import load_dotenv
-load_dotenv()
 
 app = flask.Flask(__name__)
 
