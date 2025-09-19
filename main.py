@@ -1,46 +1,57 @@
 import flask
 import json
-import requests
-import os
-import base64
+# import requests
+# import os
+# import base64
 from datetime import datetime
 
 app = flask.Flask(__name__)
 
 PLANS_FILE = "plans.json"
-GITHUB_RAW_URL = "https://raw.githubusercontent.com/Minkx1/EveryDay-er/refs/heads/main/plans.json"
-GITHUB_API_URL = "https://api.github.com/repos/Minkx1/EveryDay-er/contents/plans.json"
-GITHUB_TOKEN = os.getenv("TOKEN")
+# GITHUB_RAW_URL = "https://raw.githubusercontent.com/Minkx1/EveryDay-er/refs/heads/main/plans.json"
+# GITHUB_API_URL = "https://api.github.com/repos/Minkx1/EveryDay-er/contents/plans.json"
+# GITHUB_TOKEN = os.getenv("TOKEN")
+
+# def load_plans():
+#     headers = {
+#         "Authorization": f"token {GITHUB_TOKEN}",
+#         "Accept": "application/vnd.github.v3.raw"
+#     }
+#     r = requests.get(GITHUB_API_URL, headers=headers)
+#     if r.status_code == 200:
+#         return r.json() if "application/json" in r.headers.get("Content-Type", "") else r.json()
+#     return {}
+
+# def save_plans(plans):
+#     # Спочатку отримуємо SHA файлу
+#     headers = {"Authorization": f"token {GITHUB_TOKEN}"}
+#     r = requests.get(GITHUB_API_URL, headers=headers)
+#     if r.status_code != 200:
+#         print("Не вдалося отримати SHA файлу")
+#         return
+
+#     sha = r.json()["sha"]
+
+#     data = {
+#         "message": "Update plans.json via Flask",
+#         "content": base64.b64encode(json.dumps(plans, ensure_ascii=False, indent=4).encode()).decode(),
+#         "sha": sha
+#     }
+
+#     put_resp = requests.put(GITHUB_API_URL, headers=headers, json=data)
+#     if put_resp.status_code not in [200, 201]:
+#         print("Помилка при збереженні:", put_resp.text)
 
 def load_plans():
-    headers = {
-        "Authorization": f"token {GITHUB_TOKEN}",
-        "Accept": "application/vnd.github.v3.raw"
-    }
-    r = requests.get(GITHUB_API_URL, headers=headers)
-    if r.status_code == 200:
-        return r.json() if "application/json" in r.headers.get("Content-Type", "") else r.json()
-    return {}
+    try:
+        with open(PLANS_FILE, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except:
+        return {}
 
 def save_plans(plans):
-    # Спочатку отримуємо SHA файлу
-    headers = {"Authorization": f"token {GITHUB_TOKEN}"}
-    r = requests.get(GITHUB_API_URL, headers=headers)
-    if r.status_code != 200:
-        print("Не вдалося отримати SHA файлу")
-        return
-
-    sha = r.json()["sha"]
-
-    data = {
-        "message": "Update plans.json via Flask",
-        "content": base64.b64encode(json.dumps(plans, ensure_ascii=False, indent=4).encode()).decode(),
-        "sha": sha
-    }
-
-    put_resp = requests.put(GITHUB_API_URL, headers=headers, json=data)
-    if put_resp.status_code not in [200, 201]:
-        print("Помилка при збереженні:", put_resp.text)
+    with open(PLANS_FILE, "w", encoding="utf-8") as f:
+        json.dump(plans, f, ensure_ascii=False, indent=4)
 
 # ===== HOME =====
 @app.route("/")
